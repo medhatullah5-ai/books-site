@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medhat's Books</title>
+    <style>
+        /* CSS Variables for easy theme management */
+        :root {
+            --light-bg: #f7fafc;
+            --light-card-bg: #ffffff;
+            --light-text-primary: #2d3748;
+            --light-text-secondary: #a0aec0;
+            --light-text-tertiary: #4a5568;
+            --light-link-bg: #e2e8f0;
+            --light-link-hover: #cbd5e0;
+            --light-accent: #3182ce;
+        }
+
+        body.dark-mode {
+            --light-bg: #1a202c;
+            --light-card-bg: #2d3748;
+            --light-text-primary: #e2e8f0;
+            --light-text-secondary: #a0aec0;
+            --light-text-tertiary: #cbd5e0;
+            --light-link-bg: #4a5568;
+            --light-link-hover: #616a7a;
+            --light-accent: #63b3ed;
+        }
+
+        /* General body and font styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--light-text-primary);
+            cursor: none; 
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Custom glowing cursor */
+        .glowing-cursor {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.5);
+            position: fixed; 
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+
+        /* Hover effect for cursor */
+        .glowing-cursor.hovered {
+            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 25px 8px rgba(0, 0, 0, 0.8);
+            transform: translate(-50%, -50%) scale(1.2);
+            transition: transform 0.2s ease-out, background 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+        
+        /* Smooth typing effect cursor */
+        .smooth-cursor {
+            border-right: 2px solid black;
+            animation: smooth-blink 0.75s step-end infinite;
+        }
+        
+        @keyframes smooth-blink {
+            from, to { border-color: transparent; }
+            50% { border-color: black; }
+        }
+
+        /* Container for main content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header styling */
+        header {
+            background-color: var(--light-card-bg);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            padding: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header .flex-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .author-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease-out;
+        }
+
+        header .author-logo:hover {
+            transform: scale(1.05);
+        }
+
+        header .author-logo img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        header .author-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--light-text-primary);
+        }
+        
+        /* Navigation styling */
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        nav a {
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background-color: var(--light-link-bg);
+            color: var(--light-text-primary);
+            transition: background-color 0.2s ease-out;
+        }
+
+        nav a:hover {
+            background-color: var(--light-link-hover);
+        }
+
+        /* Theme toggle button styling */
+        #theme-toggle {
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            background-color: transparent;
+            border: none;
+            transition: background-color 0.2s ease-out, transform 0.2s ease-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-text-tertiary);
+        }
+        
+        #theme-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            transform: scale(1.1);
+        }
+
+        body.dark-mode #theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main content and book grid */
+        main {
+            padding: 2rem 0;
+        }
+
+        .heading-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .heading-container h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+        }
+
+        .search-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-container input {
+            padding: 0.5rem 1rem;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 0.5rem;
+            border: 1px solid var(--light-link-hover);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            transition: border-color 0.2s ease-out;
+            background-color: transparent;
+            color: var(--light-text-primary);
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: var(--light-accent);
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            header .flex-container {
+                flex-direction: row;
+            }
+            header .author-logo {
+                margin-bottom: 0;
+            }
+            .book-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (min-width: 768px) {
+            .book-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .book-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+
+        .book-card {
+            background-color: var(--light-card-bg);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out;
+        }
+
+        .book-card:hover {
+            transform: scale(1.05);
+        }
+
+        .book-card img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            aspect-ratio: 2 / 3;
+            transition: transform 0.3s ease-out;
+        }
+        
+        .book-card img:hover {
+            transform: scale(1.05);
+        }
+
+        .book-card h2 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--light-text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .book-card p {
+            font-size: 0.875rem;
+            color: var(--light-text-secondary);
+        }
+
+        .book-card .author {
+            color: var(--light-text-tertiary);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- This is the custom glowing cursor element, which will be controlled by JavaScript -->
+    <div class="glowing-cursor"></div>
+
+    <!-- Header Section -->
+    <header>
+        <div class="container flex-container">
+            <!-- Author Name/Logo -->
+            <div class="author-logo">
+                <img src="Cat bf.jfif" onerror="this.onerror=null;this.src='https://placehold.co/48x48/f7fafc/000?text=Cat';" alt="Medhat's Cat Logo">
+                <span class="author-name">Medhat</span>
+            </div>
+
+            <!-- Navigation and Theme Toggle -->
+            <nav>
+                <a href="#">Books</a>
+                <!-- The new light icon/button to change the theme -->
+                <button id="theme-toggle" aria-label="Toggle dark mode">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon">
+                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                    </svg>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content - Book Grid -->
+    <main class="container">
+        <!-- The heading for the smooth typing effect -->
+        <div class="heading-container">
+            <h1 id="main-heading"></h1>
+        </div>
+        
+        <!-- New Search Bar Feature -->
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search for books by title or author...">
+        </div>
+
+        <div id="book-grid" class="book-grid">
+            <!-- Books will be dynamically inserted here by JavaScript -->
+        </div>
+    </main>
+
+    <!-- JavaScript for dynamically generating book cards -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const bookGrid = document.getElementById('book-grid');
+            const searchInput = document.getElementById('search-input');
+            const themeToggle = document.getElementById('theme-toggle');
+
+            // Array containing details for 15 books.
+            const allBooks = [
+                {
+                    title: "Getting Started with Pytorch",
+                    author: "Medhat ullah",
+                    image: "pytorc.png",
+                    description: "Learn to Train Machine Learning Models using PyTorch is a beginner-friendly guide that takes you from the basics of data handling to building and optimizing deep learning models."
+                },
+                {
+                    title: "Computational PDEs: From Finite Elements to Deep Learning",
+                    author: "Medhat ullah",
+                    image: "cpde.png",
+                    description: "Beginning with fundamentals of finite difference and finite element methods, the book gradually introduces advanced computational strategies, including spectral methods, multigrid solvers, and physics-informed neural networks (PINNs). With an emphasis on both mathematical foundations and practical implementation."
+                },
+                {
+                    title: "12 ALGORITHMS YOU MUST KNOW",
+                    author: "Medhat ullah",
+                    image: "bookml.png",
+                    description: "12 Algorithms You Must Know introduces the core machine learning algorithms that form the foundation of modern AI. From linear regression and decision trees to clustering, boosting, and neural networks, each algorithm is explained with clear intuition and practical examples. Designed as a quick, accessible guide, it helps readers understand not just how these methods work, but when to use them effectively."
+                },
+                {
+                    title: "Computational Finance in C++",
+                    author: "Medhat ullah",
+                    image: "cfin.png",
+                    description: "Computational Finance in C++ explores the design and implementation of financial models, numerical methods, and algorithms using C++. Covering topics like option pricing, Monte Carlo simulations, portfolio optimization, and risk management, it bridges theory with practical coding, making it an essential resource for students, researchers, and developers in quantitative finance."
+                },
+                {
+                    title: "Getting started with scikit-learn",
+                    author: "Medhat ullah",
+                    image: "scikitlearn.png",
+                    description: "Getting Started with Scikit-Learn introduces one of the most widely used libraries for machine learning in Python. Covering essential algorithms, data preprocessing, and model evaluation, this book gives beginners a fast, hands-on way to build and experiment with ML models."
+                },
+                {
+                    title: "DRL in Financial Engineering ",
+                    author: "Medhat ullah",
+                    image: "drll.png",
+                    description: "Deep Reinforcement Learning for Financial Engineering explores how modern RL techniques can be applied to trading, portfolio optimization, risk management, and algorithmic decision-making. It bridges finance theory with practical implementations using deep learning methods."
+                },
+                {
+                    title: "Navier-Stokes Turbulence",
+                    author: "Medhat ullah",
+                    image: "navier.png",
+                    description: "Navier-Stokes Turbulence provides a focused exploration of turbulence modeling and simulation. From the mathematical foundations of the Navier-Stokes equations to computational approaches and modern data-driven methods, it equips readers to study one of the most challenging problems in fluid dynamics."
+                },
+                {
+                    title: "Practical DL with Pytorch",
+                    author: "Medhat ullah",
+                    image: "pyroch.png",
+                    description: "Practical Deep Learning with PyTorch offers a hands-on guide to building, training, and deploying deep learning models. With step-by-step examples, it covers everything from neural network basics to advanced architectures, making PyTorch approachable for learners and practitioners alike."
+                },
+                {
+                    title: "Theoretical and Computational FD",
+                    author: "Medhat ullah",
+                    image: "tcfd.png",
+                    description: "Theoretical and CFD connects the fundamentals of fluid mechanics and applied mathematics with computational fluid dynamics. It introduces theoretical principles, numerical methods, and simulation practices, offering a balanced resource for both understanding and applying CFD."
+                },
+                {
+                    title: "Self-Driving Car Engineering Roadmap",
+                    author: "Medhat ullah",
+                    image: "self.png",
+                    description: "Self-Driving Car Engineering introduces the core technologies behind autonomous vehicles. Covering perception, planning, control, and deep learning-based vision systems, it shows how AI and engineering come together to design intelligent driving systems."
+                },
+                {
+                    title: "Computional Methods in Cardiology",
+                    author: "Medhat ullah",
+                    image: "cardio.png",
+                    description: "Computational Methods in Cardiology focuses on the use of mathematical modeling, numerical simulations, and data-driven algorithms to study and analyze the cardiovascular system. It covers techniques for modeling blood flow, heart dynamics, electrophysiology, and medical imaging, providing insights into diagnosis, treatment planning, and personalized medicine."
+                },
+                {
+                    title: "Deep Learning Roadmap",
+                    author: "Medhat ullah",
+                    image: "de.png",
+                    description: "Deep Learning Roadmap is a structured guide for learners navigating the fast-moving field of AI. It outlines essential topics, from core neural networks to advanced architectures and applications, providing a clear learning path with practical insights."
+                },
+            ];
+            
+            // Function to generate and append book card HTML
+            const renderBooks = (books) => {
+                bookGrid.innerHTML = '';
+                if (books.length === 0) {
+                    bookGrid.innerHTML = '<p style="text-align: center; color: var(--light-text-secondary);">No books found. Try a different search.</p>';
+                    return;
+                }
+                books.forEach(book => {
+                    const bookCard = document.createElement('div');
+                    bookCard.className = 'book-card';
+                    bookCard.innerHTML = `
+                        <img src="${book.image}" alt="${book.title} book cover" onerror="this.onerror=null;this.src='https://placehold.co/400x600/f0f9ff/000?text=Book';" >
+                        <h2>${book.title}</h2>
+                        <p class="author">${book.author}</p>
+                        <p>${book.description}</p>
+                    `;
+                    bookGrid.appendChild(bookCard);
+                });
+            };
+
+            // New search functionality
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredBooks = allBooks.filter(book => {
+                    return book.title.toLowerCase().includes(searchTerm) || book.author.toLowerCase().includes(searchTerm);
+                });
+                renderBooks(filteredBooks);
+            });
+
+            // This is the new, smoother cursor code
+            const cursor = document.querySelector('.glowing-cursor');
+            let mouseX = 0, mouseY = 0;
+            let cursorX = 0, cursorY = 0;
+
+            document.addEventListener('mousemove', e => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            function animateCursor() {
+                const factor = 0.15;
+                cursorX += (mouseX - cursorX) * factor;
+                cursorY += (mouseY - cursorY) * factor;
+
+                cursor.style.left = cursorX + 'px';
+                cursor.style.top = cursorY + 'px';
+
+                requestAnimationFrame(animateCursor);
+            }
+
+            animateCursor();
+            
+            const interactiveElements = document.querySelectorAll('a, input, button, .book-card, .author-logo');
+            interactiveElements.forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    cursor.classList.add('hovered');
+                });
+                element.addEventListener('mouseleave', () => {
+                    cursor.classList.remove('hovered');
+                });
+            });
+            
+            // Typewriter effect for the main heading
+            const typeText = (element, text, delay = 100) => {
+                let i = 0;
+                element.classList.add('smooth-cursor');
+
+                const typing = setInterval(() => {
+                    if (i < text.length) {
+                        element.textContent += text.charAt(i);
+                        i++;
+                    } else {
+                        clearInterval(typing);
+                        element.classList.remove('smooth-cursor');
+                    }
+                }, delay);
+            };
+
+            const mainHeading = document.getElementById('main-heading');
+            typeText(mainHeading, 'My Books', 75);
+
+            renderBooks(allBooks);
+            
+            // New: Theme toggle functionality
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+            });
+        });
+    </script>
+</body>
+</html>
